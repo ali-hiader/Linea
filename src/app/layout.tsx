@@ -1,8 +1,8 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Lato } from "next/font/google";
-import "./globals.css";
+
 import NavBar from "@/components/nav_bar";
-import Footer from "@/components/footer";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <NavBar />
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );
