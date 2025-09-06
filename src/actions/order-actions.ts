@@ -1,12 +1,7 @@
 "use server";
 import stripe from "@/lib/stripe-server";
-import {
-  cartTable,
-  orderItemsTable,
-  orderTable,
-  usersTable,
-} from "@/db/schema";
-import { db } from "@/db";
+import { cartTable, orderItemsTable, orderTable } from "@/db/schema";
+import { db } from "..";
 import { eq } from "drizzle-orm";
 
 export async function createOrder(sessionId: string, userEmail: string) {
@@ -55,10 +50,7 @@ export async function createOrder(sessionId: string, userEmail: string) {
       }))
     );
     console.log("Order created successfully");
-    const user = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, userEmail));
+    const user = await db.select().from(user).where(eq(user.email, userEmail));
     await db.delete(cartTable).where(eq(cartTable.createdBy, user[0].id));
 
     return {

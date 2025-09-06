@@ -22,7 +22,7 @@ function DetialsPage({ params }: Props) {
     shirts.filter((shirt) => shirt.id === id)[0];
 
   return (
-    <main className="w-full">
+    <main className="w-full mb-16">
       <section className="flex gap-8 w-full px-4 sm:px-[15%]  max-w-fit mx-auto">
         <div className="relative h-fit min-w-md">
           <Image

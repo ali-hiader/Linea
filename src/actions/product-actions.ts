@@ -1,9 +1,8 @@
 "use server";
-import { currentUser } from "@clerk/nextjs/server";
 import { validateForm } from "../lib/validate-form";
 import * as v from "valibot";
 import { db } from "@/db";
-import { cartTable, productsTable, usersTable } from "@/db/schema";
+import { cartTable, shirtsTable, user } from "@/db/schema";
 import { eq, getTableColumns, asc, like, sql, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { slugifyIt } from "@/lib/utils";
@@ -33,8 +32,8 @@ export async function addNewProduct(state: unknown, formdata: FormData) {
   }
   const user = await db
     .select()
-    .from(usersTable)
-    .where(eq(usersTable.email, clerkUser.emailAddresses[0].emailAddress));
+    .from(user)
+    .where(eq(user.email, clerkUser.emailAddresses[0].emailAddress));
   console.log(user);
 
   const result = validateForm(scheme, formdata);
@@ -56,7 +55,7 @@ export async function addNewProduct(state: unknown, formdata: FormData) {
       "/q_auto/f_auto" +
       result.url.split("/upload")[1];
 
-    await db.insert(productsTable).values({
+    await db.insert(shirtsTable).values({
       category: product.category,
       description: product.description,
       imageUrl,
@@ -76,21 +75,21 @@ export async function fetchAllProducts(
   offset: number,
   sortBy = "newest"
 ) {
-  let orderBy = asc(productsTable.id);
+  let orderBy = asc(shirtsTable.id);
   if (sortBy === "fromLow") {
-    orderBy = asc(productsTable.price);
+    orderBy = asc(shirtsTable.price);
   }
   if (sortBy === "fromHigh") {
-    orderBy = desc(productsTable.price);
+    orderBy = desc(shirtsTable.price);
   }
 
   const products = await db
     .select({
-      user: { ...getTableColumns(usersTable) },
-      ...getTableColumns(productsTable),
+      user: { ...getTableColumns(user) },
+      ...getTableColumns(shirtsTable),
     })
-    .from(productsTable)
-    .innerJoin(usersTable, eq(productsTable.createdBy, usersTable.id))
+    .from(shirtsTable)
+    .innerJoin(user, eq(shirtsTable.createdBy, user.id))
     .orderBy(orderBy)
     .limit(limit)
     .offset(offset);
@@ -105,13 +104,13 @@ export async function fetchSimilarProducts(
 ) {
   const products = await db
     .select({
-      user: { ...getTableColumns(usersTable) },
-      ...getTableColumns(productsTable),
+      user: { ...getTableColumns(user) },
+      ...getTableColumns(shirtsTable),
     })
-    .from(productsTable)
-    .innerJoin(usersTable, eq(productsTable.createdBy, usersTable.id))
+    .from(shirtsTable)
+    .innerJoin(user, eq(shirtsTable.createdBy, user.id))
     .where(
-      sql`${productsTable.category} = ${category} AND ${productsTable.title} != ${productName}`
+      sql`${shirtsTable.category} = ${category} AND ${shirtsTable.title} != ${productName}`
     )
     .limit(9);
   return products;
@@ -129,37 +128,37 @@ export async function searchProduct(state: unknown, formdata: FormData) {
 
   const products = await db
     .select({
-      user: { ...getTableColumns(usersTable) },
-      ...getTableColumns(productsTable),
+      user: { ...getTableColumns(user) },
+      ...getTableColumns(shirtsTable),
     })
-    .from(productsTable)
-    .innerJoin(usersTable, eq(productsTable.createdBy, usersTable.id))
+    .from(shirtsTable)
+    .innerJoin(user, eq(shirtsTable.createdBy, user.id))
     .where(
       like(
-        sql`LOWER(${productsTable.title})`,
+        sql`LOWER(${shirtsTable.title})`,
         "%" + result.output.search.toLowerCase() + "%"
       )
     )
     .limit(9)
-    .orderBy(asc(productsTable.title));
+    .orderBy(asc(shirtsTable.title));
   return products;
 }
 
 export async function getProductDetail(slug: string) {
   const products = await db
     .select({
-      user: { ...getTableColumns(usersTable) },
-      ...getTableColumns(productsTable),
+      user: { ...getTableColumns(user) },
+      ...getTableColumns(shirtsTable),
     })
-    .from(productsTable)
-    .innerJoin(usersTable, eq(productsTable.createdBy, usersTable.id))
-    .where(like(productsTable.slug, slug));
+    .from(shirtsTable)
+    .innerJoin(user, eq(shirtsTable.createdBy, user.id))
+    .where(like(shirtsTable.slug, slug));
   return products;
 }
 
 export async function deleteProduct(id: number, imageUrl: string) {
   await db.delete(cartTable).where(eq(cartTable.productId, id));
-  await db.delete(productsTable).where(eq(productsTable.id, id));
+  await db.delete(shirtsTable).where(eq(shirtsTable.id, id));
 
   const filePathMatch = imageUrl.match(/products-images%2F(.+?)\?/);
   if (filePathMatch) {

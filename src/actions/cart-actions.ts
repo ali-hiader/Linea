@@ -1,9 +1,10 @@
 "use server";
 
-import { currentUser } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { cartTable, productsTable, usersTable } from "@/db/schema";
+import { db } from "..";
+import { cartTable, user as userTable, shirtsTable } from "@/db/schema";
+import { auth } from "@/lib/auth";
 import { desc, eq, getTableColumns } from "drizzle-orm";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function getSingleCartProduct(productId: number) {
@@ -15,24 +16,27 @@ export async function getSingleCartProduct(productId: number) {
 }
 export async function getCart() {
   try {
-    const clerkUser = await currentUser();
-    if (!clerkUser) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
       return redirect("/sign-up");
     }
 
     const user = await db
       .selectDistinct()
-      .from(usersTable)
-      .where(eq(usersTable.email, clerkUser!.emailAddresses[0].emailAddress));
+      .from(userTable)
+      .where(eq(userTable.id, session.user.id));
 
     const cart = await db
       .select({
         cartId: cartTable.id,
         quantity: cartTable.quantity,
-        ...getTableColumns(productsTable),
+        ...getTableColumns(shirtsTable),
       })
       .from(cartTable)
-      .innerJoin(productsTable, eq(cartTable.productId, productsTable.id))
+      .innerJoin(shirtsTable, eq(cartTable.productId, shirtsTable.id))
       .where(eq(cartTable.createdBy, user[0].id))
       .orderBy(desc(cartTable.id));
     return cart;
@@ -43,20 +47,16 @@ export async function getCart() {
 }
 
 export async function addToCart(productId: number) {
-  const currUser = await currentUser();
-  if (!currUser) {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+  if (!session) {
     redirect("/sign-up");
   }
   const user = await db
     .select()
-    .from(usersTable)
-    .where(
-      eq(
-        usersTable.email,
-        currUser.primaryEmailAddress?.emailAddress ??
-          currUser.emailAddresses[0].emailAddress
-      )
-    );
+    .from(userTable)
+    .where(eq(userTable.email, session.user.id));
   console.log(user);
   const exsistingProduct = await getSingleCartProduct(productId);
 

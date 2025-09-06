@@ -18,7 +18,6 @@ const navLinks = [
 ];
 export default function NavBar() {
   const pathName = usePathname();
-
   return (
     <nav className="flex justify-between items-start mt-10 mb-20 px-4 sm:px-[5%]">
       <hgroup className="space-y-1 ">
@@ -59,16 +58,16 @@ export default function NavBar() {
 
             {/* Account */}
             <li>
-              <button aria-label="Go to account">
+              <Link href={"/account"} aria-label="Go to account">
                 <UserIcon className="size-6" />
-              </button>
+              </Link>
             </li>
 
             {/* Cart */}
             <li>
-              <button className="relative" aria-label="Open cart">
+              <Link href={"/cart"} className="relative" aria-label="Open cart">
                 <CartIcon className="size-6" />
-              </button>
+              </Link>
             </li>
           </ul>
         </div>
