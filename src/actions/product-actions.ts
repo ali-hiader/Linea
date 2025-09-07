@@ -25,7 +25,7 @@ const schema = z.object({
   message: z.string().min(1, "Message is required"),
 });
 
-interface NewProductState {
+export interface NewProductState {
   success: boolean;
   imageError?: string[];
   titleError?: string[];
@@ -37,7 +37,7 @@ interface NewProductState {
   generalError?: string;
 }
 export async function addNewProduct(
-  state: NewProductState,
+  state: NewProductState | null,
   formdata: FormData
 ) {
   const session = await auth.api.getSession({
@@ -90,6 +90,10 @@ export async function addNewProduct(
     });
     throw redirect("/seller-dashboard");
   });
+
+  return {
+    success: true,
+  };
 }
 
 export async function fetchAllProducts(
