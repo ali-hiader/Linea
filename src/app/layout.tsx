@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lato.variable} ${cormorant.variable} antialiased bg-white max-w-[1500px] `}
+        className={`${lato.variable} ${cormorant.variable} antialiased bg-white max-w-[1500px] mx-auto`}
       >
         <NavBar />
         {children}

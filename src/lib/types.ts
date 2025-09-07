@@ -30,7 +30,6 @@ export interface Product {
 }
 
 export interface CartProduct {
-  cartId: number;
   id: number;
   title: string;
   slug: string;
@@ -38,9 +37,9 @@ export interface CartProduct {
   description: string;
   imageUrl: string;
   price: number;
-  productDetail: string;
   message: string;
   createdBy: string;
+  cartId: number;
   quantity: number;
 }
 

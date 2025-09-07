@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import Heading from "./heading";
 
 const filters = ["All", "Dress shirts", "Casual shirts", "White shirts"];
 
-export default function Hero() {
+interface Props {
+  itemsOnPage: number;
+}
+
+export default function Hero({ itemsOnPage }: Props) {
   const [selectedFilter, setSelectedFilter] = useState("All");
 
   return (
     <header className="mb-7 lg:mb-11 px-4 sm:px-[5%]">
-      <h1 className="headingFont text-4xl md:text-7xl text-gray-900 font-bold">
-        Shirts Collection
-      </h1>
+      <Heading title="Shirts Collection" itemsOnPage={itemsOnPage} />
       {/* Description */}
       <div className="mt-6 prose prose-sm light:prose-light sm:prose lg:prose-lg xl:prose-xl light:[&_a]:prose-light prose-h1:mb-4 prose-h1:text-5xl prose-h2:mb-4 prose-h2:text-4xl prose-h3:font-neutraface prose-h3:text-3xl max-w-3xl">
         <div className=" text-xl leading-8 transition-all duration-500 overflow-hidden line-clamp-3 max-h-48 lg:max-h-32">

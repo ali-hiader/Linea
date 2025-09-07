@@ -9,10 +9,10 @@ export default function Spinner(props: SVGProps<SVGSVGElement>) {
       height={288}
       viewBox="0 0 24 24"
       {...props}
+      stroke="#000"
     >
       <path
         fill="none"
-        stroke="#000"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth={2}

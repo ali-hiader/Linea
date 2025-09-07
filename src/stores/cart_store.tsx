@@ -6,7 +6,7 @@ interface CartStore {
   setProducts: (products: CartProduct[]) => void;
   addProduct: (product: CartProduct) => void;
   updateQuantity: (productId: number) => void;
-  deceraseQuantity: (productId: number) => void;
+  decreaseQuantity: (productId: number) => void;
   removeProduct: (productId: number) => void;
 }
 
@@ -28,20 +28,23 @@ const useCartStore = create<CartStore>((set) => ({
       ),
     })),
 
-  deceraseQuantity: (productId) =>
-    set((state) => ({
-      products: state.products.map((product) => {
-        if (product.id === productId) {
-          if (product.quantity === 1) {
-            return product;
-          } else {
-            return { ...product, quantity: product.quantity - 1 };
-          }
-        } else {
-          return product;
-        }
-      }),
-    })),
+  decreaseQuantity: (productId) =>
+    set((state) => {
+      const product = state.products.find((p) => p.id === productId);
+      if (!product) return state;
+
+      if (product.quantity === 1) {
+        return {
+          products: state.products.filter((p) => p.id !== productId),
+        };
+      } else {
+        return {
+          products: state.products.map((p) =>
+            p.id === productId ? { ...p, quantity: p.quantity - 1 } : p
+          ),
+        };
+      }
+    }),
 
   removeProduct: (productId) =>
     set((state) => ({

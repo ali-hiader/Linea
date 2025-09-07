@@ -30,7 +30,6 @@ export default function NavBar() {
         <p className="text-gray-600">Timeless / Elegant</p>
       </hgroup>
       <section className="flex h-11 flex-row items-center justify-between rounded-full bg-primary text-white px-6 lg:h-16 lg:min-w-fit lg:gap-16 lg:px-12">
-        {/* Desktop Nav */}
         <ul className="desktop-body-l hidden list-none flex-row items-center gap-8 lg:flex">
           {navLinks.map(({ href, name }) => (
             <li key={href}>
@@ -59,14 +58,22 @@ export default function NavBar() {
             {/* Account */}
             <li>
               <Link href={"/account"} aria-label="Go to account">
-                <UserIcon className="size-6" />
+                <UserIcon
+                  className={`${
+                    pathName === "/account" ? "text-secondary " : "text-white "
+                  } size-6`}
+                />
               </Link>
             </li>
 
             {/* Cart */}
             <li>
               <Link href={"/cart"} className="relative" aria-label="Open cart">
-                <CartIcon className="size-6" />
+                <CartIcon
+                  className={`${
+                    pathName === "/cart" ? "text-secondary " : "text-white "
+                  } size-6`}
+                />
               </Link>
             </li>
           </ul>

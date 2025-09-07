@@ -11,6 +11,7 @@ import {
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import useCartStore from "@/stores/cart_store";
 
 interface Props {
   product: CartProduct;
@@ -22,10 +23,13 @@ function CartItem({ product }: Props) {
     update: false,
     decrease: false,
   });
+
+  const { decreaseQuantity, removeProduct, updateQuantity } = useCartStore();
   async function deleteProduct(productId: number) {
     try {
       setLoading((prev) => ({ ...prev, delete: true }));
       await removeFromCart(productId);
+      removeProduct(productId);
     } catch (error) {
       console.error("Failed to remove item:", error);
     } finally {
@@ -36,20 +40,23 @@ function CartItem({ product }: Props) {
   async function increaseQty() {
     setLoading((prev) => ({ ...prev, update: true }));
     await increaseQtyDB(product.id);
+    updateQuantity(product.id);
     setLoading((prev) => ({ ...prev, update: false }));
   }
+
   async function decQty(productId: number) {
     setLoading((prev) => ({ ...prev, decrease: true }));
     await decreaseQtyDB(productId);
+    decreaseQuantity(productId);
     setLoading((prev) => ({ ...prev, decrease: false }));
   }
 
   return (
     <Card
       key={product.cartId}
-      className="h-fit grid grid-cols-[1fr_3fr] min-h-36 gap-5 overflow-hidden rounded-md px-6 py-4"
+      className="h-fit grid grid-cols-[1fr_3fr] min-h-36 gap-5 overflow-hidden  px-6 py-4"
     >
-      <div className="relative border border-border shadow overflow-hidden rounded-lg">
+      <div className="relative border border-border shadow overflow-hidden">
         <Image
           src={product.imageUrl}
           alt={product.title}
@@ -74,9 +81,9 @@ function CartItem({ product }: Props) {
           <div className="flex items-center">
             <Button
               onClick={() => decQty(product.id)}
-              variant="outline"
+              variant="ghost"
               size="icon"
-              className="size-7 rounded-lg border-gray-300"
+              className="size-7 rounded-none cursor-pointer"
               disabled={loading.decrease}
             >
               {loading.decrease ? (
@@ -91,9 +98,9 @@ function CartItem({ product }: Props) {
 
             <Button
               onClick={increaseQty}
-              variant="outline"
+              variant="ghost"
               size="icon"
-              className="size-7 rounded-lg border-gray-300"
+              className="size-7 rounded-none cursor-pointer"
               disabled={loading.update}
             >
               {loading.update ? (
@@ -109,7 +116,7 @@ function CartItem({ product }: Props) {
             onClick={() => deleteProduct(product.id)}
             variant="link"
             size="icon"
-            className="h-10 w-10"
+            className="h-10 w-10 cursor-pointer"
             disabled={loading.delete}
           >
             {loading.delete ? (

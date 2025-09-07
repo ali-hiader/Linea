@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const SizeSelector = () => {
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-  const [selectedSize, setSelectedSize] = useState("XS");
+  const [selectedSize, setSelectedSize] = useState("L");
 
   return (
     <div className="mt-8">
