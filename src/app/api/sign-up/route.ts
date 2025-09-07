@@ -11,6 +11,14 @@ const signUpSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters long" }),
 });
 
+export interface SignUpResponseI {
+  success: boolean;
+  nameError?: string;
+  emailError?: string;
+  passwordError?: string;
+  generalError?: string;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -20,6 +28,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
+          nameError: z.flattenError(parsed.error).fieldErrors.name,
           emailError: z.flattenError(parsed.error).fieldErrors.email,
           passwordError: z.flattenError(parsed.error).fieldErrors.password,
         },
@@ -44,7 +53,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          generalError: "Could not create account. Please try again.",
+          generalError: (await betterAuthResponse.json()).message,
         },
         { status: 400 }
       );

@@ -10,6 +10,13 @@ const signInSchema = z.object({
     .min(6, { message: "Password should be atleaset 6 chracters long." }),
 });
 
+export interface SignInResponseI {
+  success: boolean;
+  emailError?: string;
+  passwordError?: string;
+  generalError?: string;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();

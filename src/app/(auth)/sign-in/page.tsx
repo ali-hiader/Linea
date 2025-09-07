@@ -1,14 +1,37 @@
 "use client";
 
+import { SignInResponseI } from "@/app/api/sign-in/route";
+import Spinner from "@/icons/spinner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+interface ErrorState {
+  emailError: string | undefined;
+  passwordError: string | undefined;
+  generalError: string | undefined;
+}
+
 export default function SignInPage() {
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<ErrorState>({
+    emailError: undefined,
+    passwordError: undefined,
+    generalError: undefined,
+  });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
+    setLoading(true);
+    setError({
+      emailError: undefined,
+      passwordError: undefined,
+      generalError: undefined,
+    });
+
+    const previousPage = document.referrer;
+    const nextPath = previousPage ? new URL(previousPage).pathname : "/";
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -22,21 +45,27 @@ export default function SignInPage() {
         cache: "no-store",
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as SignInResponseI;
       console.log("data:", data);
 
       if (!res.ok) {
-        setError(
-          data.generalError ||
-            data.emailError ||
-            data.passwordError ||
-            "Signup failed"
-        );
+        setError({
+          emailError: data.emailError,
+          generalError: data.generalError,
+          passwordError: data.passwordError,
+        });
         return;
       }
+      console.log(nextPath);
+      router.push(nextPath || "/");
     } catch (err: unknown) {
       console.log(err);
-      setError("Something went wrong");
+      setError((prev) => ({
+        ...prev,
+        generalError: "Sign-in failed. Please try again later",
+      }));
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -45,28 +74,47 @@ export default function SignInPage() {
       <h1 className="text-5xl font-bold headingFont mb-8 text-primary">
         Sign In
       </h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 min-w-xl">
+      {error.generalError && (
+        <p className="text-rose-600 text-sm text-start mb-2">
+          {error.generalError}
+        </p>
+      )}
+      <form onSubmit={handleSubmit} className="flex flex-col min-w-xl">
         <input
           type="email"
           className=" placeholder:text-gray-700 text-gray-800 border border-gray-400 px-4 py-2 rounded"
           placeholder="Email"
           name="email"
         />
+        {error.emailError && (
+          <p className="text-rose-600 text-sm text-start mt-1">
+            {error.emailError}
+          </p>
+        )}
         <input
           type="password"
-          className=" placeholder:text-gray-700 text-gray-800 border border-gray-400 px-4 py-2 rounded"
+          className="mt-4 placeholder:text-gray-700 text-gray-800 border border-gray-400 px-4 py-2 rounded"
           placeholder="Password"
           name="password"
         />
-        <p className="text-rose-600 text-sm text-start">{error}</p>
-
-        <p>
+        {error.passwordError && (
+          <p className="text-rose-600 text-sm text-start mt-1">
+            {error.passwordError}
+          </p>
+        )}
+        <p className="mt-4">
           Don&apos;t have an account?{" "}
           <Link className="text-sky-600 underline" href="/sign-up">
             Sign up
           </Link>
         </p>
-        <button className="rounded-full px-4 py-2 bg-secondary-foreground mt-6 hover:bg-secondary transition-all hover:text-white cursor-pointer">
+        <button
+          className="rounded-full px-4 py-2 bg-secondary-foreground mt-6 hover:bg-secondary transition-all hover:text-white cursor-pointer group relative disabled:cursor-not-allowed"
+          disabled={loading}
+        >
+          {loading && (
+            <Spinner className="absolute top-2.5 left-2.5 animate-spin size-5 stroke-black group-hover:stroke-white " />
+          )}{" "}
           Sign In
         </button>
       </form>

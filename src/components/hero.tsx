@@ -44,7 +44,7 @@ export default function Hero({ itemsOnPage }: Props) {
         </div>
 
         {/* Right Section: View Toggle */}
-        <div className="mr-4 flex flex-row justify-end gap-5 lg:mr-0">
+        {/* <div className="mr-4 flex flex-row justify-end gap-5 lg:mr-0">
           <button aria-label="Overview view">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,10 @@ export default function Hero({ itemsOnPage }: Props) {
               viewBox="0 0 16 16"
               className="h-4 w-4"
             >
-              <path fill="currentColor" d="M3 14.767h.1V12.9H1.233v1.867..." />
+              <path
+                fill="currentColor"
+                d="M3 14.767 H 3.1 V 12.9 H 1.233 V 14.767 Z"
+              />
             </svg>
           </button>
           <button aria-label="Detail view">
@@ -64,10 +67,13 @@ export default function Hero({ itemsOnPage }: Props) {
               viewBox="0 0 16 16"
               className="h-4 w-4"
             >
-              <path fill="currentColor" d="M3.333.1h9.334A3.233 3.233..." />
+              <path
+                fill="currentColor"
+                d="M3.333 0.1 H 12.667 A 3.233 3.233 0 0 1 16 3.333 V 12.667 A 3.233 3.233 0 0 1 12.667 16 H 3.333 A 3.233 3.233 0 0 1 0 12.667 V 3.333 A 3.233 3.233 0 0 1 3.333 0.1 Z"
+              />
             </svg>
           </button>
-        </div>
+        </div> */}
       </div>
     </header>
   );
