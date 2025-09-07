@@ -1,50 +1,73 @@
 "use server";
-import { validateForm } from "../lib/validate-form";
-import * as v from "valibot";
-import { db } from "@/db";
+import * as z from "zod";
+import { db } from "..";
 import { cartTable, shirtsTable, user } from "@/db/schema";
 import { eq, getTableColumns, asc, like, sql, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { slugifyIt } from "@/lib/utils";
 import { uploadImage, deleteImage } from "@/lib/cloudinary";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-const scheme = v.object({
-  image: v.pipe(v.file("Invalid file format")),
-  title: v.pipe(
-    v.string("Product title is required"),
-    v.minLength(1, "Title cannot be empty")
-  ),
-  price: v.pipe(v.string("Price cannot be empty"), v.nonEmpty()),
-  category: v.pipe(v.string(), v.nonEmpty()),
-  description: v.pipe(
-    v.string("Description is required"),
-    v.nonEmpty(),
-    v.minLength(1, "Description cannot be empty")
-  ),
-  productDetail: v.pipe(v.string(), v.nonEmpty()),
-  message: v.pipe(v.string(), v.nonEmpty()),
+const schema = z.object({
+  image: z.instanceof(File, { message: "Invalid file format" }),
+
+  title: z.string().min(1, "Product title is required"),
+
+  price: z.string().min(1, "Price cannot be empty"),
+
+  category: z.string().min(1, "Category cannot be empty"),
+
+  description: z.string().min(1, "Description cannot be empty"),
+
+  productDetail: z.string().min(1, "Product detail is required"),
+
+  message: z.string().min(1, "Message is required"),
 });
 
-export async function addNewProduct(state: unknown, formdata: FormData) {
-  const clerkUser = await currentUser();
-  if (!clerkUser) {
-    throw redirect(process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL!);
-  }
-  const user = await db
-    .select()
-    .from(user)
-    .where(eq(user.email, clerkUser.emailAddresses[0].emailAddress));
-  console.log(user);
+interface NewProductState {
+  success: boolean;
+  imageError?: string[];
+  titleError?: string[];
+  priceError?: string[];
+  categoryError?: string[];
+  descriptionError?: string[];
+  productDetailError?: string[];
+  messageError?: string[];
+  generalError?: string;
+}
+export async function addNewProduct(
+  state: NewProductState,
+  formdata: FormData
+) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  const result = validateForm(scheme, formdata);
-
-  if (!result.success) {
-    return result.output;
+  if (!session) {
+    throw redirect("/sign-in");
   }
-  const product = result.output;
+
+  const parsedData = schema.safeParse(formdata);
+
+  if (!parsedData.success) {
+    const fieldErrors = z.flattenError(parsedData.error).fieldErrors;
+    return {
+      success: false,
+      imageError: fieldErrors.image,
+      titleError: fieldErrors.title,
+      priceError: fieldErrors.price,
+      categoryError: fieldErrors.category,
+      descriptionError: fieldErrors.description,
+      productDetailError: fieldErrors.productDetail,
+      messageError: fieldErrors.message,
+    };
+  }
+
+  const product = parsedData.data;
   const arrayBuffer = await product.image.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
-  await uploadImage(buffer, async (result) => {
+  await uploadImage(buffer, async (result: { url: string } | undefined) => {
     if (!result) {
       throw redirect("/add-product");
     }
@@ -61,10 +84,9 @@ export async function addNewProduct(state: unknown, formdata: FormData) {
       imageUrl,
       message: product.message,
       price: +product.price,
-      productDetail: product.productDetail,
       title: product.title,
       slug: slugifyIt(product.title),
-      createdBy: user[0].id,
+      createdBy: session.user.id,
     });
     throw redirect("/seller-dashboard");
   });
@@ -116,14 +138,21 @@ export async function fetchSimilarProducts(
   return products;
 }
 
-const searchSchema = v.object({
-  search: v.pipe(v.string("Enter product name in form of text.")),
+const searchSchema = z.object({
+  search: z.string("Enter product name in form of text."),
 });
-export async function searchProduct(state: unknown, formdata: FormData) {
-  const result = validateForm(searchSchema, formdata);
 
-  if (!result.success) {
-    return result.output;
+interface SearchShirtState {
+  inputError: string;
+}
+
+export async function searchShirt(state: SearchShirtState, formdata: FormData) {
+  const parsedData = searchSchema.safeParse(formdata);
+
+  if (!parsedData.success) {
+    return {
+      inputError: z.flattenError(parsedData.error).fieldErrors.search,
+    };
   }
 
   const products = await db
@@ -136,7 +165,7 @@ export async function searchProduct(state: unknown, formdata: FormData) {
     .where(
       like(
         sql`LOWER(${shirtsTable.title})`,
-        "%" + result.output.search.toLowerCase() + "%"
+        "%" + parsedData.data.search.toLowerCase() + "%"
       )
     )
     .limit(9)
