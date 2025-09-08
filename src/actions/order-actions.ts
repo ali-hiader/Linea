@@ -1,8 +1,8 @@
 "use server";
-// import stripe from "@/lib/stripe-server";
 import { cartTable, orderItemsTable, orderTable } from "@/db/schema";
 import { db } from "..";
 import { eq } from "drizzle-orm";
+import { stripe } from "@/lib/stripe-server";
 
 export async function createOrder(sessionId: string, userEmail: string) {
   try {
@@ -16,42 +16,42 @@ export async function createOrder(sessionId: string, userEmail: string) {
       };
     }
 
-    // const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    // if (session.payment_status !== "paid") {
-    //   console.log("Payment not paid");
-    //   return {
-    //     message: "Payment not paid",
-    //     status: 400,
-    //     success: false,
-    //   };
-    // }
+    if (session.payment_status !== "paid") {
+      console.log("Payment not paid");
+      return {
+        message: "Payment not paid",
+        status: 400,
+        success: false,
+      };
+    }
 
-    // const newOrder = await db
-    //   .insert(orderTable)
-    //   .values({
-    //     userEmail,
-    //     sessionId,
-    //     totalAmount: session.amount_total! / 100,
-    //     status: "completed",
-    //   })
-    //   .returning();
+    const newOrder = await db
+      .insert(orderTable)
+      .values({
+        userEmail: userEmail,
+        sessionId,
+        totalAmount: session.amount_total! / 100,
+        status: "completed",
+      })
+      .returning();
 
-    // const lineItems = await stripe.checkout.sessions.listLineItems(sessionId, {
-    //   expand: ["data.price.product"],
-    // });
+    const lineItems = await stripe.checkout.sessions.listLineItems(sessionId, {
+      expand: ["data.price.product"],
+    });
 
-    // await db.insert(orderItemsTable).values(
-    //   lineItems.data.map((item) => ({
-    //     orderId: newOrder[0].id,
-    //     productName: item.description || "",
-    //     quantity: item.quantity || 1,
-    //     price: Math.round(item.amount_total! / 100),
-    //   }))
-    // );
-    // console.log("Order created successfully");
-    // const user = await db.select().from(user).where(eq(user.email, userEmail));
-    // await db.delete(cartTable).where(eq(cartTable.createdBy, user[0].id));
+    await db.insert(orderItemsTable).values(
+      lineItems.data.map((item) => ({
+        orderId: newOrder[0].id,
+        productName: item.description || "",
+        quantity: item.quantity || 1,
+        price: Math.round(item.amount_total! / 100),
+      }))
+    );
+    console.log("Order created successfully");
+
+    await db.delete(cartTable).where(eq(cartTable.createdBy, userEmail));
 
     return {
       message: "Order created successfully",

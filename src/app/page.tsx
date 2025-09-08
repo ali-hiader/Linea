@@ -4,6 +4,7 @@ import React from "react";
 import { db } from "..";
 import { shirtsTable } from "@/db/schema";
 import { ToastContainer } from "react-toastify";
+import DisplayAlert from "@/components/display_alert";
 
 async function HomePage() {
   const shirts = await db.select().from(shirtsTable);
@@ -11,11 +12,17 @@ async function HomePage() {
   return (
     <main>
       <Hero itemsOnPage={shirts.length} />
-      <section className="grid sm:grid-cols-3 gap-x-6 gap-y-10 px-4 mb-12">
-        {shirts.map((shirt) => (
-          <ProductCard key={shirt.id} {...shirt} />
-        ))}
-      </section>
+      {shirts.length === 0 ? (
+        <DisplayAlert showBtn={false}>
+          Thanks for visiting, No shirts in the stores!
+        </DisplayAlert>
+      ) : (
+        <section className="grid sm:grid-cols-3 gap-x-6 gap-y-10 px-4 mb-12">
+          {shirts.map((shirt) => (
+            <ProductCard key={shirt.id} {...shirt} />
+          ))}
+        </section>
+      )}
       <ToastContainer />
     </main>
   );

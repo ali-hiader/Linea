@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { seedShirts } from "@/db/seed";
 
 const signInSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
@@ -19,6 +20,7 @@ export interface SignInResponseI {
 
 export async function POST(req: Request) {
   try {
+    seedShirts("1");
     const body = await req.json();
     const parsedData = signInSchema.safeParse(body);
 

@@ -15,7 +15,8 @@ export const shirts = [
     id: "blue-shirt-classic-twill",
     name: "Blue Classic Twill Shirt",
     href: "/shirts/blue-shirt-classic-twill",
-    image: "/blue-1.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238134/blue-1_jns1dg.webp",
     type: "Cut Away Collar",
     price: "$240",
     description:
@@ -27,7 +28,8 @@ export const shirts = [
     id: "white-shirt-signature-twill",
     name: "White Signature Twill Shirt",
     href: "/shirts/white-shirt-signature-twill",
-    image: "/white-1.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238135/white-1_m0sbqv.webp",
     type: "Pointed Collar",
     price: "$250",
     description:
@@ -39,7 +41,8 @@ export const shirts = [
     id: "black-shirt-slim-fit",
     name: "Black Slim Fit Shirt",
     href: "/shirts/black-shirt-slim-fit",
-    image: "/black-1.webp",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238134/black-1_sjzhjc.webp",
     type: "Cut Away Collar",
     price: "$260",
     description:
@@ -51,7 +54,8 @@ export const shirts = [
     id: "blue-shirt-luxury-poplin",
     name: "Blue Luxury Poplin Shirt",
     href: "/shirts/blue-shirt-luxury-poplin",
-    image: "/blue-2.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238135/blue-2_q1wmx8.webp",
     type: "Pointed Collar",
     price: "$255",
     description:
@@ -63,7 +67,8 @@ export const shirts = [
     id: "white-shirt-classic-linen",
     name: "White Classic Linen Shirt",
     href: "/shirts/white-shirt-classic-linen",
-    image: "/white-2.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238135/white-2_e5g1hm.webp",
     type: "Cut Away Collar",
     price: "$245",
     description:
@@ -75,7 +80,8 @@ export const shirts = [
     id: "black-shirt-evening",
     name: "Black Evening Shirt",
     href: "/shirts/black-shirt-evening",
-    image: "/black-2.webp",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238134/black-2_acl0gn.webp",
     type: "Pointed Collar",
     price: "$270",
     description:
@@ -87,7 +93,8 @@ export const shirts = [
     id: "blue-shirt-oxford",
     name: "Blue Oxford Shirt",
     href: "/shirts/blue-shirt-oxford",
-    image: "/blue-3.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238135/blue-3_ruznro.webp",
     type: "Cut Away Collar",
     price: "$235",
     description:
@@ -99,7 +106,8 @@ export const shirts = [
     id: "white-shirt-premium-poplin",
     name: "White Premium Poplin Shirt",
     href: "/shirts/white-shirt-premium-poplin",
-    image: "/white-3.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238135/white-3_ekljjq.webp",
     type: "Pointed Collar",
     price: "$255",
     description:
@@ -111,7 +119,8 @@ export const shirts = [
     id: "blue-shirt-elegant-twill",
     name: "Blue Elegant Twill Shirt",
     href: "/shirts/blue-shirt-elegant-twill",
-    image: "/blue-4.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238134/blue-4_n8xqrm.webp",
     type: "Cut Away Collar",
     price: "$250",
     description:
@@ -123,7 +132,8 @@ export const shirts = [
     id: "black-shirt-modern-fit",
     name: "Black Modern Fit Shirt",
     href: "/shirts/black-shirt-modern-fit",
-    image: "/black-3.webp",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238134/black-3_ezwcfn.webp",
     type: "Pointed Collar",
     price: "$265",
     description:
@@ -131,23 +141,24 @@ export const shirts = [
     shippingAndReturns:
       "Free standard shipping on all orders. Returns accepted within 30 days in original condition.",
   },
-  {
-    id: "white-shirt-luxury-satin",
-    name: "White Luxury Satin Shirt",
-    href: "/shirts/white-shirt-luxury-satin",
-    image: "/white-4.png",
-    type: "Cut Away Collar",
-    price: "$260",
-    description:
-      "Crafted from luxury satin, this white shirt features a subtle shine and smooth touch for a premium feel.",
-    shippingAndReturns:
-      "Free standard shipping on all orders. Returns accepted within 30 days in original condition.",
-  },
+  // {
+  //   id: "white-shirt-luxury-satin",
+  //   name: "White Luxury Satin Shirt",
+  //   href: "/shirts/white-shirt-luxury-satin",
+  //   image: "/white-4.png",
+  //   type: "Cut Away Collar",
+  //   price: "$260",
+  //   description:
+  //     "Crafted from luxury satin, this white shirt features a subtle shine and smooth touch for a premium feel.",
+  //   shippingAndReturns:
+  //     "Free standard shipping on all orders. Returns accepted within 30 days in original condition.",
+  // },
   {
     id: "blue-shirt-soft-linen",
     name: "Blue Soft Linen Shirt",
     href: "/shirts/blue-shirt-soft-linen",
-    image: "/blue-5.png",
+    image:
+      "https://res.cloudinary.com/alibuildsweb/image/upload/v1757238135/blue-5_b7ugyv.webp",
     type: "Pointed Collar",
     price: "$245",
     description:
@@ -155,16 +166,16 @@ export const shirts = [
     shippingAndReturns:
       "Free standard shipping on all orders. Returns accepted within 30 days in original condition.",
   },
-  {
-    id: "white-shirt-formal-tuxedo",
-    name: "White Formal Tuxedo Shirt",
-    href: "/shirts/white-shirt-formal-tuxedo",
-    image: "/white-5.png",
-    type: "Cut Away Collar",
-    price: "$280",
-    description:
-      "Formal tuxedo shirt in white, featuring a crisp cut away collar. A must-have for black-tie events.",
-    shippingAndReturns:
-      "Free standard shipping on all orders. Returns accepted within 30 days in original condition.",
-  },
+  // {
+  //   id: "white-shirt-formal-tuxedo",
+  //   name: "White Formal Tuxedo Shirt",
+  //   href: "/shirts/white-shirt-formal-tuxedo",
+  //   image: "/white-5.png",
+  //   type: "Cut Away Collar",
+  //   price: "$280",
+  //   description:
+  //     "Formal tuxedo shirt in white, featuring a crisp cut away collar. A must-have for black-tie events.",
+  //   shippingAndReturns:
+  //     "Free standard shipping on all orders. Returns accepted within 30 days in original condition.",
+  // },
 ];

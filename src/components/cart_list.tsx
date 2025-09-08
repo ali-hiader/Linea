@@ -36,7 +36,7 @@ function CartList({ initialCart }: Props) {
     <>
       <Heading title="Cart" itemsOnPage={totalItemsInCart} />
       {products.length === 0 ? (
-        <DisplayAlert> No products in the cart!</DisplayAlert>
+        <DisplayAlert showBtn> No products in the cart!</DisplayAlert>
       ) : (
         <section className="grid grid-cols-2 gap-6 mt-12 px-4 max-w-5xl mx-auto">
           {products.map((product) => (
