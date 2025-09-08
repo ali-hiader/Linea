@@ -1,10 +1,14 @@
-import Checkout from "@/components/checkout";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
+import { eq, getTableColumns } from "drizzle-orm";
 import { cartTable, shirtsTable } from "@/db/schema";
 import { db } from "@/index";
 import { auth } from "@/lib/auth";
-import { eq, getTableColumns } from "drizzle-orm";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+
+import Checkout from "@/components/checkout";
+
+export const dynamic = "force-dynamic";
 
 async function CheckoutPage() {
   const session = await auth.api.getSession({

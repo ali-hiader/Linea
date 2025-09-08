@@ -4,12 +4,15 @@ import { redirect } from "next/navigation";
 
 import { Order } from "@/lib/types";
 import { OrderItem as OrderItemI } from "@/lib/types";
+import { auth } from "@/lib/auth";
 import { db } from "@/index";
 import { orderItemsTable, orderTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
+
+import Heading from "@/components/heading";
 import DisplayAlert from "@/components/display_alert";
 import { Card } from "@/components/ui/card";
-import Heading from "@/components/heading";
+
+export const dynamic = "force-dynamic";
 
 async function Analytics() {
   const session = await auth.api.getSession({
