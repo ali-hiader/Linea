@@ -20,8 +20,7 @@ async function CallBackPage({ searchParams }: SuccessPageProps) {
   }
 
   try {
-    const res = await createOrder(sessionId, session?.user.email);
-    console.log(res);
+    await createOrder(sessionId, session?.user.email);
   } catch (error) {
     console.error("Error creating order:", error);
   }

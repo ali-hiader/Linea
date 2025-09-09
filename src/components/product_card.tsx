@@ -27,17 +27,19 @@ export default function ProductCard({
     addProduct(cartProduct);
     setLoading(false);
     toast.info("Added to Cart!", {
-      position: "top-right",
+      position: "bottom-right",
       autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: false,
-      pauseOnHover: true,
       draggable: true,
       progress: undefined,
       theme: "colored",
       transition: Bounce,
       className: "rounded-none",
       closeButton: true,
+      style: {
+        background: "#d4af37",
+      },
     });
   }
 

@@ -4,10 +4,12 @@ import { redirect } from "next/navigation";
 
 import { getCart } from "@/actions/cart-actions";
 import CartList from "@/components/cart_list";
+import { connection } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function Cart() {
+  connection();
   const session = await auth.api.getSession({
     headers: await headers(),
   });

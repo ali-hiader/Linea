@@ -38,7 +38,6 @@ export default function NavBar() {
     label: string;
   }) => {
     const active = pathName === link.href;
-    console.log(pathName === "/sign-up" && "sign-in" === "sign-in");
     return (
       <Link
         href={link.href}
