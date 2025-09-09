@@ -39,7 +39,7 @@ export async function getCart() {
     }
 
     const user = await db
-      .selectDistinct()
+      .select()
       .from(userTable)
       .where(eq(userTable.id, session.user.id));
 

@@ -2,6 +2,7 @@
 
 import { SignInResponseI } from "@/app/api/sign-in/route";
 import Spinner from "@/icons/spinner";
+import { useAuthStore } from "@/stores/auth_store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,6 +15,7 @@ interface ErrorState {
 
 export default function SignInPage() {
   const router = useRouter();
+  const { setSession } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ErrorState>({
     emailError: undefined,
@@ -47,6 +49,7 @@ export default function SignInPage() {
 
       const data = (await res.json()) as SignInResponseI;
       console.log("data:", data);
+      setSession(data.session);
 
       if (!res.ok) {
         setError({
@@ -56,7 +59,7 @@ export default function SignInPage() {
         });
         return;
       }
-      console.log(nextPath);
+
       router.push(nextPath || "/");
     } catch (err: unknown) {
       console.log(err);

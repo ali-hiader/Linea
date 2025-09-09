@@ -1,21 +1,24 @@
-import React, { SVGProps } from "react";
+import React from "react";
+import type { SVGProps } from "react";
 
-function UserIcon(props: SVGProps<SVGSVGElement>) {
+export default function UserIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      fill="none"
-      viewBox="0 0 18 18"
+      width={288}
+      height={288}
+      viewBox="0 0 24 24"
       {...props}
     >
-      <path
-        fill="currentColor"
-        d="M9 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0-7.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM9 10.5a6.76 6.76 0 0 0-6.75 6.75.75.75 0 1 0 1.5 0 5.25 5.25 0 1 1 10.5 0 .75.75 0 1 0 1.5 0A6.76 6.76 0 0 0 9 10.5Z"
-      />
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth={2}
+      >
+        <path d="M19.727 20.447c-.455-1.276-1.46-2.403-2.857-3.207S13.761 16 12 16s-3.473.436-4.87 1.24s-2.402 1.931-2.857 3.207"></path>
+        <circle cx={12} cy={8} r={4}></circle>
+      </g>
     </svg>
   );
 }
-
-export default UserIcon;

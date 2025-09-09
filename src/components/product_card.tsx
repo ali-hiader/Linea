@@ -77,7 +77,7 @@ export default function ProductCard({
               <Spinner className="size-4 animate-spin" />
             ) : (
               <button onClick={handleAddingToCart}>
-                <CartIcon className="cursor-pointer" />
+                <CartIcon className="cursor-pointer size-4" />
               </button>
             )}
           </div>

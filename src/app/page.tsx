@@ -8,7 +8,6 @@ import DisplayAlert from "@/components/display_alert";
 
 async function HomePage() {
   const shirts = await db.select().from(shirtsTable);
-
   return (
     <main>
       <Hero itemsOnPage={shirts.length} />

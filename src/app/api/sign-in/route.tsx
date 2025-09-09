@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { seedShirts } from "@/db/seed";
+import { Session } from "better-auth";
 
 const signInSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
@@ -13,6 +13,7 @@ const signInSchema = z.object({
 
 export interface SignInResponseI {
   success: boolean;
+  session: Session | null;
   emailError?: string;
   passwordError?: string;
   generalError?: string;
@@ -20,7 +21,14 @@ export interface SignInResponseI {
 
 export async function POST(req: Request) {
   try {
-    seedShirts("1");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (session) {
+      return NextResponse.json({ success: true, session }, { status: 200 });
+    }
+
     const body = await req.json();
     const parsedData = signInSchema.safeParse(body);
 
@@ -28,6 +36,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
+          session: null,
           emailError: z.flattenError(parsedData.error).fieldErrors.email,
           passwordError: z.flattenError(parsedData.error).fieldErrors.password,
         },
@@ -35,7 +44,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const betterAuthResponse = await auth.api.signInEmail({
+    const signInResponse = await auth.api.signInEmail({
       body: {
         email: parsedData.data.email,
         password: parsedData.data.password,
@@ -46,19 +55,24 @@ export async function POST(req: Request) {
       asResponse: true,
     });
 
-    if (!betterAuthResponse.ok) {
+    if (!signInResponse.ok) {
       return NextResponse.json(
         {
           success: false,
+          session: null,
           generalError: "Invalid credentials. Please try again.",
         },
         { status: 401 }
       );
     }
+    const betterAuthResponse: Response = await signInResponse.json();
 
-    const response = NextResponse.json({ success: true });
+    const response = NextResponse.json(
+      { success: true, session: betterAuthResponse },
+      { status: 200 }
+    );
 
-    betterAuthResponse.headers.forEach((value, key) => {
+    signInResponse.headers.forEach((value, key) => {
       if (key.toLowerCase() === "set-cookie") {
         response.headers.append("set-cookie", value);
       }

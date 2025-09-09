@@ -15,7 +15,13 @@ async function UserAccountPage() {
     redirect("/sign-in");
   }
 
-  return <div>UserAccountPage</div>;
+  return (
+    <main className="px-4 sm:px-[5%]">
+      <h1 className="relative w-fit headingFont text-4xl md:text-7xl text-gray-900 font-bold">
+        Account
+      </h1>
+    </main>
+  );
 }
 
 export default UserAccountPage;
