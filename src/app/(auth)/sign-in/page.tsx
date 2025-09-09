@@ -48,7 +48,6 @@ export default function SignInPage() {
       });
 
       const data = (await res.json()) as SignInResponseI;
-      console.log("data:", data);
       setSession(data.session);
 
       if (!res.ok) {
