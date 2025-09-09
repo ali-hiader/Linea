@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import { desc, eq, getTableColumns } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function getSingleCartProduct(shirtId: number) {
   const products = await db
@@ -86,15 +87,20 @@ export async function addToCart(shirtId: number) {
         quantity: 1,
       })
       .returning();
+    revalidatePath("/cart");
     return await getSingleShirt(newCartProduct[0].productId);
   } else {
     const increasedQtyCartProduct = await increaseQtyDB(shirtId);
+    revalidatePath("/cart");
+
     return await getSingleShirt(increasedQtyCartProduct[0].productId);
   }
 }
 
 export async function increaseQtyDB(shirtId: number) {
   const exsistingProduct = await getSingleCartProduct(shirtId);
+  revalidatePath("/cart");
+
   return await db
     .update(cartTable)
     .set({
@@ -109,8 +115,12 @@ export async function decreaseQtyDB(shirtId: number) {
 
   if (exsistingProduct.quantity === 1) {
     await removeFromCart(shirtId);
+    revalidatePath("/cart");
+
     return "success";
   } else {
+    revalidatePath("/cart");
+
     return await db
       .update(cartTable)
       .set({
