@@ -1,17 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { authClient } from "@/lib/auth-client";
 import { useAuthStore } from "@/stores/auth_store";
+import { Session } from "better-auth";
 
-export function SessionInitializer() {
+interface Props {
+  session: Session | undefined;
+}
+
+export function SessionInitializer({ session }: Props) {
   const setSession = useAuthStore((s) => s.setSession);
 
   useEffect(() => {
-    authClient.getSession().then((res) => {
-      setSession(res.data?.session ?? null);
-    });
-  }, [setSession]);
+    if (session) {
+      setSession(session);
+    } else setSession(null);
+  }, [session, setSession]);
 
   return null;
 }
