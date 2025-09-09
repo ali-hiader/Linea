@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Lato } from "next/font/google";
 
-import { SessionInitializer } from "@/components/session_initializer";
+// import { SessionInitializer } from "@/components/session_initializer";
 import NavBar from "@/components/nav_bar";
 
 const cormorant = Cormorant_Garamond({
@@ -32,7 +32,7 @@ export default function RootLayout({
       <body
         className={`${lato.variable} ${cormorant.variable} antialiased bg-white max-w-[1500px] mx-auto`}
       >
-        <SessionInitializer />
+        {/* <SessionInitializer /> */}
         <NavBar />
         {children}
         {/* <Footer /> */}

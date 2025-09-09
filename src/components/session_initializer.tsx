@@ -13,5 +13,5 @@ export function SessionInitializer() {
     });
   }, [setSession]);
 
-  return null; // it doesn't render anything
+  return null;
 }
