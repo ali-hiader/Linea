@@ -3,23 +3,12 @@
 import { addToCart } from "@/actions/cart-actions";
 import CartIcon from "@/icons/cart";
 import Spinner from "@/icons/spinner";
+import { Product } from "@/lib/types";
 import useCartStore from "@/stores/cart_store";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Bounce, toast } from "react-toastify";
-
-interface ProductCardProps {
-  id: number;
-  title: string;
-  slug: string;
-  category: string;
-  description: string;
-  imageUrl: string;
-  price: number;
-  message: string;
-  createdBy: string;
-}
 
 export default function ProductCard({
   id,
@@ -28,7 +17,7 @@ export default function ProductCard({
   imageUrl,
   price,
   category,
-}: ProductCardProps) {
+}: Product) {
   const { addProduct } = useCartStore();
   const [loading, setLoading] = useState(false);
 

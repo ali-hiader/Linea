@@ -24,9 +24,8 @@ export interface Product {
   description: string;
   imageUrl: string;
   price: number;
-  productDetail: string;
   message: string;
-  createdBy: number;
+  createdBy: string;
 }
 
 export interface CartProduct {

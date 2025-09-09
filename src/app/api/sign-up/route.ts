@@ -28,6 +28,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
+          session: null,
           nameError: z.flattenError(parsed.error).fieldErrors.name,
           emailError: z.flattenError(parsed.error).fieldErrors.email,
           passwordError: z.flattenError(parsed.error).fieldErrors.password,
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
     }
 
     // Call Better Auth sign-up
-    const betterAuthResponse = await auth.api.signUpEmail({
+    const signUpResponse = await auth.api.signUpEmail({
       body: {
         email: parsed.data.email,
         name: parsed.data.name,
@@ -49,18 +50,23 @@ export async function POST(req: Request) {
       asResponse: true,
     });
 
-    if (!betterAuthResponse.ok) {
+    if (!signUpResponse.ok) {
       return NextResponse.json(
         {
           success: false,
-          generalError: (await betterAuthResponse.json()).message,
+          session: null,
+          generalError: (await signUpResponse.json()).message,
         },
         { status: 400 }
       );
     }
+    const betterAuthResponse: Response = await signUpResponse.json();
 
-    const response = NextResponse.json({ success: true });
-    betterAuthResponse.headers.forEach((value, key) => {
+    const response = NextResponse.json({
+      success: true,
+      session: betterAuthResponse,
+    });
+    signUpResponse.headers.forEach((value, key) => {
       response.headers.set(key, value);
     });
 

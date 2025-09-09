@@ -2,6 +2,7 @@
 
 import { SignUpResponseI } from "@/app/api/sign-up/route";
 import Spinner from "@/icons/spinner";
+import { useAuthStore } from "@/stores/auth_store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,6 +16,7 @@ interface ErrorState {
 
 export default function Page() {
   const router = useRouter();
+  const { setSession } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ErrorState>({
     nameError: undefined,
@@ -50,6 +52,7 @@ export default function Page() {
       });
 
       const data = (await res.json()) as SignUpResponseI;
+      setSession(data.session);
 
       if (!res.ok) {
         setError({

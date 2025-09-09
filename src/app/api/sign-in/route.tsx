@@ -21,14 +21,6 @@ export interface SignInResponseI {
 
 export async function POST(req: Request) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (session) {
-      return NextResponse.json({ success: true, session }, { status: 200 });
-    }
-
     const body = await req.json();
     const parsedData = signInSchema.safeParse(body);
 
