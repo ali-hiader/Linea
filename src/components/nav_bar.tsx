@@ -32,13 +32,13 @@ const signedUpLinks = [
 export default function NavBar() {
   const pathName = usePathname();
   const session = useAuthStore((state) => state.session);
-
   const renderLink = (link: {
     href: string;
     icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
     label: string;
   }) => {
     const active = pathName === link.href;
+    console.log(pathName === "/sign-up" && "sign-in" === "sign-in");
     return (
       <Link
         href={link.href}
@@ -104,7 +104,10 @@ export default function NavBar() {
               <Link href={link.href}>
                 <link.icon
                   className={`${
-                    pathName === link.href ? "text-secondary " : "text-white "
+                    pathName === link.href ||
+                    (pathName === "/sign-up" && link.href === "/sign-in")
+                      ? "text-secondary "
+                      : "text-white "
                   } size-8`}
                 />
               </Link>
