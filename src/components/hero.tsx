@@ -13,11 +13,11 @@ interface Props {
 
 export default function Hero({ initialShirts }: Props) {
   const [selectedFilter, setSelectedFilter] = useState("All");
+  const [showFilter, setShowFilter] = useState(false);
   const { shirts, setShirts } = useShirtStore();
 
   function changeFilter(filter: string) {
     setSelectedFilter(filter);
-    console.log(filter, shirts);
     setShirts(initialShirts.filter((shirt) => shirt.category !== filter));
   }
 
@@ -34,9 +34,20 @@ export default function Hero({ initialShirts }: Props) {
           </p>
         </div>
       </div>
-      <div className="mb-7 mt-14 flex flex-col gap-7 lg:mb-11 lg:flex-row lg:justify-between">
+      <div className="mb-7 mt-14 flex flex-col gap-7 lg:mb-11">
         {/* Left Section: Filters */}
-        <div className="flex gap-2 overflow-x-auto px-5 lg:flex-wrap lg:px-0">
+        <button
+          onClick={() => setShowFilter((prev) => !prev)}
+          className={`${
+            !showFilter ? "bg-primary text-white" : "bg-transparent"
+          } shrink-0 h-10 min-w-max border border-primary items-center justify-center rounded-full px-6 inline-flex cursor-pointer font-medium uppercase transition-all sm:hidden`}
+        >
+          Filters
+        </button>
+
+        <div
+          className={`${showFilter ? "hidden sm:flex" : "flex"} gap-2 overflow-x-auto sm:flex-row flex-col lg:flex-wrap lg:px-0 transition-all`}
+        >
           {filters.map((filter) => (
             <button
               onClick={() => changeFilter(filter)}
@@ -45,44 +56,12 @@ export default function Hero({ initialShirts }: Props) {
                 selectedFilter === filter
                   ? "bg-secondary text-white"
                   : "bg-secondary-foreground"
-              } shrink-0 h-11 min-w-max items-center justify-center rounded-full px-6 inline-flex cursor-pointer`}
+              } shrink-0 h-10 min-w-max items-center justify-center rounded-full px-6 inline-flex cursor-pointer transition-all`}
             >
               {filter}
             </button>
           ))}
         </div>
-
-        {/* Right Section: View Toggle */}
-        {/* <div className="mr-4 flex flex-row justify-end gap-5 lg:mr-0">
-          <button aria-label="Overview view">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              className="h-4 w-4"
-            >
-              <path
-                fill="currentColor"
-                d="M3 14.767 H 3.1 V 12.9 H 1.233 V 14.767 Z"
-              />
-            </svg>
-          </button>
-          <button aria-label="Detail view">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              className="h-4 w-4"
-            >
-              <path
-                fill="currentColor"
-                d="M3.333 0.1 H 12.667 A 3.233 3.233 0 0 1 16 3.333 V 12.667 A 3.233 3.233 0 0 1 12.667 16 H 3.333 A 3.233 3.233 0 0 1 0 12.667 V 3.333 A 3.233 3.233 0 0 1 3.333 0.1 Z"
-              />
-            </svg>
-          </button>
-        </div> */}
       </div>
     </header>
   );

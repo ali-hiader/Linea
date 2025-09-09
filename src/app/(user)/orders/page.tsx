@@ -46,7 +46,7 @@ async function Analytics() {
   }
 
   return (
-    <main className="px-4 sm:px-[5%]">
+    <main className="px-4 sm:px-[5%] pb-12">
       <Heading title="Orders" itemsOnPage={orderItems.length} />
       <ul className="w-full">
         {orderItems.length === 0 ? (
@@ -57,7 +57,7 @@ async function Analytics() {
               key={orderData.order.id}
               className="w-full flex flex-col items-start gap-2"
             >
-              <section className="mt-6 flex items-center justify-between w-full">
+              <section className="mt-6 flex sm:items-center sm:flex-row flex-col sm:justify-between w-full">
                 <span>
                   Order #{i + 1} - {getTime(orderData.order)}
                 </span>
@@ -65,7 +65,7 @@ async function Analytics() {
                   total - ${orderData.order.totalAmount}
                 </span>
               </section>
-              <section className="w-full space-y-4">
+              <section className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 ">
                 {orderData.items.map((item) => (
                   <OrderItem key={item.id} item={item} />
                 ))}

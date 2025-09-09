@@ -54,9 +54,9 @@ function CartItem({ product }: Props) {
   return (
     <Card
       key={product.cartId}
-      className="h-fit grid grid-cols-[1fr_3fr] min-h-36 gap-5 overflow-hidden  px-6 py-4"
+      className="h-fit grid grid-cols-[auto_1fr] lg:grid-cols-[1fr_3fr] min-h-36 gap-5 overflow-hidden  px-6 py-4"
     >
-      <div className="relative border border-border shadow overflow-hidden">
+      <div className="relative border border-border shadow overflow-hidden min-h-30 max-w-1/3 lg:max-w-full lg:min-h-full min-w-20 lg:min-w-full">
         <Image
           src={product.imageUrl}
           alt={product.title}
@@ -74,7 +74,7 @@ function CartItem({ product }: Props) {
         </div>
 
         <p className="text-sm text-muted-foreground mt-1">
-          Category: {product.category}
+          <span className="sm:inline hidden">Category:</span> {product.category}
         </p>
 
         <div className="flex items-center justify-between mt-5">

@@ -38,7 +38,7 @@ function CartList({ initialCart }: Props) {
       {products.length === 0 ? (
         <DisplayAlert showBtn> No products in the cart!</DisplayAlert>
       ) : (
-        <section className="grid grid-cols-2 gap-6 mt-12 px-4 max-w-5xl mx-auto">
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12 px-4 max-w-5xl mx-auto">
           {products.map((product) => (
             <CartItem key={product.id} product={product} />
           ))}
@@ -51,8 +51,8 @@ function CartList({ initialCart }: Props) {
             <p className="font-medium">Amount to Pay</p>
             <p className="font-medium">${totalPrice.toFixed(2)}</p>
           </div>
-          <Link href={"/checkout"} className="w-fit self-center">
-            <Button className="w-96 bg-secondary cursor-pointer hover:bg-secondary/90 transition-all duration-300 text-white rounded-full py-6">
+          <Link href={"/checkout"} className="sm:w-fit self-center w-full">
+            <Button className="sm:w-96 w-full bg-secondary cursor-pointer hover:bg-secondary/90 transition-all duration-300 text-white rounded-full py-6">
               Continue to Checkout
             </Button>
           </Link>

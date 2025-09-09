@@ -48,14 +48,14 @@ function Checkout({ cartItems }: Props) {
         itemsOnPage={cartItems.reduce((sum, shirt) => sum + shirt.quantity, 0)}
       />
       <section className="max-w-5xl mx-auto mt-12">
-        <div className="grid grid-cols-2 gap-6 mt-8 px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8 px-4">
           {cartItems.map((product) => (
             <CheckoutProduct key={product.id} product={product} />
           ))}
         </div>
 
         {cartItems.length > 0 && (
-          <footer className="mt-12 space-y-4 flex flex-col">
+          <footer className="mt-12 space-y-4 flex flex-col px-2">
             <div className="flex justify-between w-full px-6">
               <p className="">Amount to Pay</p>
               <p className="font-semibold headingFont text-xl">
@@ -65,7 +65,7 @@ function Checkout({ cartItems }: Props) {
             <Button
               onClick={handleCheckout}
               disabled={isLoading}
-              className="w-96 self-center bg-emerald-700 hover:bg-emerald-800 transition-all duration-300 text-white rounded-full py-6"
+              className="sm:w-96 w-full self-center bg-secondary hover:bg-secondary/90 cursor-pointer transition-all duration-300 text-white rounded-full py-6"
             >
               {isLoading ? (
                 <Spinner className="size-7 animate-spin [&>path]:stroke-white" />

@@ -11,9 +11,9 @@ function CheckoutProduct({ product }: Props) {
   return (
     <Card
       key={product.cartId}
-      className="h-fit grid grid-cols-[1fr_5fr] min-h-20 gap-5 overflow-hidden  px-4 py-4"
+      className="h-fit grid grid-cols-[1fr_5fr] md:max-w-2/3 lg:max-w-full w-full min-h-20 gap-5 overflow-hidden  px-4 py-4"
     >
-      <div className="relative border border-border shadow overflow-hidden ">
+      <div className="relative border border-border shadow overflow-hidden min-h-20">
         <Image
           src={product.imageUrl}
           alt={product.title}
