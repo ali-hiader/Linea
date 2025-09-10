@@ -18,9 +18,9 @@ interface Props {
 function CartList({ initialCart }: Props) {
   const { products, setProducts } = useCartStore();
 
-  useEffect(() => {
-    setProducts(initialCart);
-  }, [initialCart, setProducts]);
+  // useEffect(() => {
+  //   setProducts(initialCart);
+  // }, [initialCart, setProducts]);
 
   const totalPrice = products.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
