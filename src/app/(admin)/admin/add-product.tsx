@@ -1,6 +1,9 @@
 "use client";
 
+import { ChangeEvent, useActionState, useRef, useState } from "react";
 import Form from "next/form";
+import Image from "next/image";
+import { ImageIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,14 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ImageIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { ChangeEvent, useActionState, useRef, useState } from "react";
-import Image from "next/image";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import Spinner from "@/icons/spinner";
 import { addNewProduct } from "@/actions/shirt-actions";
-import { Card } from "@/components/ui/card";
 
 function AddProduct() {
   const [state, formAction, pending] = useActionState(addNewProduct, null);

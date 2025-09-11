@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { createOrder } from "@/actions/order-actions";
+import { clearCartDB } from "@/actions/cart-actions";
 
 interface SuccessPageProps {
   searchParams: { session_id?: string };
@@ -21,6 +22,7 @@ async function CallBackPage({ searchParams }: SuccessPageProps) {
 
   try {
     await createOrder(sessionId, session?.user.email);
+    await clearCartDB(session.user.id);
   } catch (error) {
     console.error("Error creating order:", error);
   }

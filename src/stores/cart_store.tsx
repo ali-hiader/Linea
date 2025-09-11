@@ -8,6 +8,7 @@ interface CartStore {
   increaseShirtQuantityCartS: (productId: number, userId: string) => void;
   decreaseShirtQuantityCartS: (productId: number, userId: string) => void;
   removeShirtCartS: (productId: number, userId: string) => void;
+  clearCartS: () => void;
 }
 
 const useCartStore = create<CartStore>((set) => ({
@@ -72,6 +73,11 @@ const useCartStore = create<CartStore>((set) => ({
       shirtsCartS: state.shirtsCartS.filter(
         (product) => product.id !== productId
       ),
+    })),
+
+  clearCartS: () =>
+    set(() => ({
+      shirtsCartS: [],
     })),
 }));
 

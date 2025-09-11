@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { Session } from "better-auth";
 
 const signUpSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
