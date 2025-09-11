@@ -205,3 +205,16 @@ export async function deleteProduct(id: number, imageUrl: string) {
 
   redirect("/seller-dashboard");
 }
+
+export async function getSingleShirt(shirtId: number) {
+  const products = await db
+    .select({
+      cartId: cartTable.id,
+      quantity: cartTable.quantity,
+      ...getTableColumns(shirtsTable),
+    })
+    .from(cartTable)
+    .innerJoin(shirtsTable, eq(cartTable.productId, shirtsTable.id))
+    .where(eq(cartTable.productId, shirtId));
+  return products[0];
+}

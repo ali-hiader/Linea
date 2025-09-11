@@ -6,6 +6,8 @@ import { SessionInitializer } from "@/components/session_initializer";
 import NavBar from "@/components/nav_bar";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { getCartDB } from "@/actions/cart-actions";
+import { CartProduct } from "@/lib/types";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -33,15 +35,19 @@ export default async function RootLayout({
     headers: await headers(),
   });
 
+  let cart: CartProduct[] = [];
+  if (session) {
+    cart = await getCartDB(session.user.id);
+  }
+
   return (
     <html lang="en">
       <body
         className={`${lato.variable} ${cormorant.variable} antialiased bg-white max-w-[1500px] mx-auto`}
       >
-        <SessionInitializer session={session?.session} />
+        <SessionInitializer session={session?.user.id} cart={cart} />
         <NavBar />
         {children}
-        {/* <Footer /> */}
       </body>
     </html>
   );

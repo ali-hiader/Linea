@@ -2,20 +2,25 @@
 
 import { useEffect } from "react";
 import { useAuthStore } from "@/stores/auth_store";
-import { Session } from "better-auth";
+import { CartProduct } from "@/lib/types";
+import useCartStore from "@/stores/cart_store";
 
 interface Props {
-  session: Session | undefined;
+  session: string | undefined;
+  cart: CartProduct[];
 }
 
-export function SessionInitializer({ session }: Props) {
-  const setSession = useAuthStore((s) => s.setSession);
+export function SessionInitializer({ session, cart }: Props) {
+  const setSession = useAuthStore((s) => s.setUserIdAuthS);
+  const { setShirtsCartS: setProducts } = useCartStore();
 
   useEffect(() => {
-    if (session) {
-      setSession(session);
-    } else setSession(null);
+    setSession(session);
   }, [session, setSession]);
+
+  useEffect(() => {
+    setProducts(cart);
+  }, [cart, setProducts]);
 
   return null;
 }

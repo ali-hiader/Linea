@@ -6,49 +6,72 @@ import { CartProduct } from "@/lib/types";
 import {
   decreaseQtyDB,
   increaseQtyDB,
-  removeFromCart,
+  removeFromCartDB,
 } from "@/actions/cart-actions";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import useCartStore from "@/stores/cart_store";
+import { useAuthStore } from "@/stores/auth_store";
 
 interface Props {
   product: CartProduct;
 }
 
 function CartItem({ product }: Props) {
+  const userIdAuthS = useAuthStore((state) => state.userIdAuthS);
+  const {
+    decreaseShirtQuantityCartS,
+    removeShirtCartS,
+    increaseShirtQuantityCartS,
+  } = useCartStore();
+
   const [loading, setLoading] = useState({
     delete: false,
-    update: false,
+    increase: false,
     decrease: false,
   });
 
-  const { decreaseQuantity, removeProduct, updateQuantity } = useCartStore();
+  async function increaseQty() {
+    if (!userIdAuthS) return;
+
+    try {
+      setLoading((prev) => ({ ...prev, increase: true }));
+      await increaseQtyDB(product.id, userIdAuthS);
+      increaseShirtQuantityCartS(product.id, userIdAuthS);
+    } catch (error) {
+      console.error("Failed to increase item's qty:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, increase: false }));
+    }
+  }
+
+  async function decQty(productId: number) {
+    if (!userIdAuthS) return;
+
+    try {
+      setLoading((prev) => ({ ...prev, decrease: true }));
+      await decreaseQtyDB(productId, userIdAuthS);
+      decreaseShirtQuantityCartS(productId, userIdAuthS);
+    } catch (error) {
+      console.error("Failed to decrease item's qty:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, decrease: false }));
+    }
+  }
+
   async function deleteProduct(productId: number) {
+    if (!userIdAuthS) return;
+
     try {
       setLoading((prev) => ({ ...prev, delete: true }));
-      await removeFromCart(productId);
-      removeProduct(productId);
+      await removeFromCartDB(productId, userIdAuthS);
+      removeShirtCartS(productId, userIdAuthS);
     } catch (error) {
       console.error("Failed to remove item:", error);
     } finally {
       setLoading((prev) => ({ ...prev, delete: false }));
     }
-  }
-
-  async function increaseQty() {
-    setLoading((prev) => ({ ...prev, update: true }));
-    await increaseQtyDB(product.id);
-    updateQuantity(product.id);
-    setLoading((prev) => ({ ...prev, update: false }));
-  }
-
-  async function decQty(productId: number) {
-    setLoading((prev) => ({ ...prev, decrease: true }));
-    await decreaseQtyDB(productId);
-    decreaseQuantity(productId);
-    setLoading((prev) => ({ ...prev, decrease: false }));
   }
 
   return (
@@ -101,9 +124,9 @@ function CartItem({ product }: Props) {
               variant="ghost"
               size="icon"
               className="size-7 rounded-none cursor-pointer"
-              disabled={loading.update}
+              disabled={loading.increase}
             >
-              {loading.update ? (
+              {loading.increase ? (
                 <Spinner className="size-4 animate-spin" />
               ) : (
                 <Plus className="sze-2" />

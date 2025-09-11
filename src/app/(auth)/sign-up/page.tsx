@@ -16,7 +16,7 @@ interface ErrorState {
 
 export default function Page() {
   const router = useRouter();
-  const { setSession } = useAuthStore();
+  const setUserIdAuthS = useAuthStore((state) => state.setUserIdAuthS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ErrorState>({
     nameError: undefined,
@@ -52,7 +52,7 @@ export default function Page() {
       });
 
       const data = (await res.json()) as SignUpResponseI;
-      setSession(data.session);
+      setUserIdAuthS(data.userId);
 
       if (!res.ok) {
         setError({

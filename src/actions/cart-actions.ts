@@ -1,49 +1,16 @@
 "use server";
 
 import { db } from "..";
-import { cartTable, user as userTable, shirtsTable } from "@/db/schema";
+import { cartTable, shirtsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { desc, eq, getTableColumns } from "drizzle-orm";
+import { and, desc, eq, getTableColumns } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { getSingleShirt } from "./shirt-actions";
 
-export async function getSingleCartProduct(shirtId: number) {
-  const products = await db
-    .select()
-    .from(cartTable)
-    .where(eq(cartTable.productId, shirtId));
-  return products[0];
-}
-
-export async function getSingleShirt(shirtId: number) {
-  const products = await db
-    .select({
-      cartId: cartTable.id,
-      quantity: cartTable.quantity,
-      ...getTableColumns(shirtsTable),
-    })
-    .from(cartTable)
-    .innerJoin(shirtsTable, eq(cartTable.productId, shirtsTable.id))
-    .where(eq(cartTable.productId, shirtId));
-  return products[0];
-}
-
-export async function getCart() {
+export async function getCartDB(userId: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session) {
-      return redirect("/sign-up");
-    }
-
-    const user = await db
-      .select()
-      .from(userTable)
-      .where(eq(userTable.id, session.user.id));
-
     const cart = await db
       .select({
         cartId: cartTable.id,
@@ -52,7 +19,7 @@ export async function getCart() {
       })
       .from(cartTable)
       .innerJoin(shirtsTable, eq(cartTable.productId, shirtsTable.id))
-      .where(eq(cartTable.createdBy, user[0].id))
+      .where(and(eq(cartTable.createdBy, userId)))
       .orderBy(desc(cartTable.id));
 
     return cart;
@@ -62,27 +29,24 @@ export async function getCart() {
   }
 }
 
-export async function addToCart(shirtId: number) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    redirect("/sign-up");
-  }
-
-  const user = await db
+export async function getSingleCartProductDB(shirtId: number, userId: string) {
+  const products = await db
     .select()
-    .from(userTable)
-    .where(eq(userTable.id, session.user.id));
+    .from(cartTable)
+    .where(
+      and(eq(cartTable.productId, shirtId), eq(cartTable.createdBy, userId))
+    );
+  return products[0];
+}
 
-  const exsistingProduct = await getSingleCartProduct(shirtId);
+export async function addToCartDB(shirtId: number, userId: string) {
+  const exsistingProduct = await getSingleCartProductDB(shirtId, userId);
 
   if (!exsistingProduct) {
     const newCartProduct = await db
       .insert(cartTable)
       .values({
-        createdBy: user[0].id,
+        createdBy: userId,
         productId: shirtId,
         quantity: 1,
       })
@@ -90,15 +54,14 @@ export async function addToCart(shirtId: number) {
     revalidatePath("/cart");
     return await getSingleShirt(newCartProduct[0].productId);
   } else {
-    const increasedQtyCartProduct = await increaseQtyDB(shirtId);
+    const increasedQtyCartProduct = await increaseQtyDB(shirtId, userId);
     revalidatePath("/cart");
-
     return await getSingleShirt(increasedQtyCartProduct[0].productId);
   }
 }
 
-export async function increaseQtyDB(shirtId: number) {
-  const exsistingProduct = await getSingleCartProduct(shirtId);
+export async function increaseQtyDB(shirtId: number, userId: string) {
+  const exsistingProduct = await getSingleCartProductDB(shirtId, userId);
   revalidatePath("/cart");
 
   return await db
@@ -106,36 +69,55 @@ export async function increaseQtyDB(shirtId: number) {
     .set({
       quantity: exsistingProduct.quantity + 1,
     })
-    .where(eq(cartTable.productId, shirtId))
+    .where(
+      and(eq(cartTable.productId, shirtId), eq(cartTable.createdBy, userId))
+    )
     .returning();
 }
 
-export async function decreaseQtyDB(shirtId: number) {
-  const exsistingProduct = await getSingleCartProduct(shirtId);
+export async function decreaseQtyDB(shirtId: number, userId: string) {
+  const exsistingProduct = await getSingleCartProductDB(shirtId, userId);
 
   if (exsistingProduct.quantity === 1) {
-    await removeFromCart(shirtId);
+    await removeFromCartDB(shirtId, userId);
     revalidatePath("/cart");
 
     return "success";
   } else {
     revalidatePath("/cart");
-
     return await db
       .update(cartTable)
       .set({
         quantity: exsistingProduct.quantity - 1,
       })
-      .where(eq(cartTable.productId, exsistingProduct.productId))
+      .where(
+        and(
+          eq(cartTable.productId, exsistingProduct.productId),
+          eq(cartTable.createdBy, userId)
+        )
+      )
       .returning();
   }
 }
-export async function removeFromCart(productId: number) {
-  await db.delete(cartTable).where(eq(cartTable.productId, productId));
-  const cartProducts = await getCart();
+export async function removeFromCartDB(shirtId: number, userId: string) {
+  revalidatePath("/cart");
+  await db
+    .delete(cartTable)
+    .where(
+      and(eq(cartTable.productId, shirtId), eq(cartTable.createdBy, userId))
+    );
+
+  const cartProducts = await getCartDB(userId);
   return cartProducts;
 }
 
-export async function clearCart() {
-  await db.delete(cartTable);
+export async function clearCartDB(userId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    return redirect("/sign-in");
+  }
+
+  await db.delete(cartTable).where(eq(cartTable.createdBy, userId));
 }

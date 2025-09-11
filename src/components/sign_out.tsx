@@ -4,11 +4,13 @@ import { useAuthStore } from "@/stores/auth_store";
 import { redirect } from "next/navigation";
 
 function SignOutBtn() {
-  const { setSession } = useAuthStore();
+  const { setUserIdAuthS } = useAuthStore();
 
   function signout() {
-    fetch("/api/sign-out");
-    setSession(null);
+    fetch("/api/sign-out", {
+      cache: "no-store",
+    });
+    setUserIdAuthS(undefined);
     redirect("/");
   }
 

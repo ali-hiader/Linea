@@ -85,7 +85,7 @@ export const shirtsTable = pgTable("shirts", {
 });
 
 export const cartTable = pgTable("cart", {
-  id: integer().notNull().generatedAlwaysAsIdentity(),
+  id: integer().notNull().generatedAlwaysAsIdentity().primaryKey(),
   quantity: integer().notNull(),
 
   createdBy: text()

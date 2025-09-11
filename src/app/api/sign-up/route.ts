@@ -14,7 +14,7 @@ const signUpSchema = z.object({
 
 export interface SignUpResponseI {
   success: boolean;
-  session: Session | null;
+  userId: string | undefined;
   nameError?: string;
   emailError?: string;
   passwordError?: string;
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          session: null,
+          userId: undefined,
           nameError: z.flattenError(parsed.error).fieldErrors.name,
           emailError: z.flattenError(parsed.error).fieldErrors.email,
           passwordError: z.flattenError(parsed.error).fieldErrors.password,
@@ -56,17 +56,17 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          session: null,
+          userId: undefined,
           generalError: (await signUpResponse.json()).message,
         },
         { status: 400 }
       );
     }
-    const betterAuthResponse: Response = await signUpResponse.json();
+    const betterAuthResponse = await signUpResponse.json();
 
     const response = NextResponse.json({
       success: true,
-      session: betterAuthResponse,
+      userId: betterAuthResponse.user.id,
     });
     signUpResponse.headers.forEach((value, key) => {
       response.headers.set(key, value);
@@ -79,6 +79,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
+        userId: undefined,
         generalError:
           error instanceof Error ? error.message : "Something went wrong",
       },

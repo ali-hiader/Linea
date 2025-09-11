@@ -1,33 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 
 import useCartStore from "@/stores/cart_store";
 import CartItem from "./cart_item";
 import DisplayAlert from "@/components/display_alert";
 
 import { Button } from "@/components/ui/button";
-import { CartProduct } from "@/lib/types";
 import Heading from "./heading";
 
-interface Props {
-  initialCart: CartProduct[];
-}
+function CartList() {
+  const { shirtsCartS } = useCartStore();
 
-function CartList({ initialCart }: Props) {
-  const { products, setProducts } = useCartStore();
-
-  // useEffect(() => {
-  //   setProducts(initialCart);
-  // }, [initialCart, setProducts]);
-
-  const totalPrice = products.reduce(
+  const totalPrice = shirtsCartS.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
   );
 
-  const totalItemsInCart = products.reduce(
+  const totalItemsInCart = shirtsCartS.reduce(
     (totalQty, item) => item.quantity + totalQty,
     0
   );
@@ -35,17 +25,17 @@ function CartList({ initialCart }: Props) {
   return (
     <>
       <Heading title="Cart" itemsOnPage={totalItemsInCart} />
-      {products.length === 0 ? (
+      {shirtsCartS.length === 0 ? (
         <DisplayAlert showBtn> No products in the cart!</DisplayAlert>
       ) : (
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12 px-4 max-w-5xl mx-auto">
-          {products.map((product) => (
+          {shirtsCartS.map((product) => (
             <CartItem key={product.id} product={product} />
           ))}
         </section>
       )}
 
-      {products.length > 0 && (
+      {shirtsCartS.length > 0 && (
         <footer className="mt-12 space-y-4 flex flex-col max-w-5xl mx-auto">
           <div className="flex justify-between w-full px-6 text-gray-700">
             <p className="font-medium">Amount to Pay</p>

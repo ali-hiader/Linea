@@ -1,14 +1,9 @@
 "use client";
 
-import { addToCart } from "@/actions/cart-actions";
-import CartIcon from "@/icons/cart";
-import Spinner from "@/icons/spinner";
 import { Product } from "@/lib/types";
-import useCartStore from "@/stores/cart_store";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { Bounce, toast } from "react-toastify";
+import AddToCartBtn from "./add_to_cart";
 
 export default function ProductCard({
   id,
@@ -18,31 +13,6 @@ export default function ProductCard({
   price,
   category,
 }: Product) {
-  const { addProduct } = useCartStore();
-  const [loading, setLoading] = useState(false);
-
-  async function handleAddingToCart() {
-    setLoading(true);
-    const cartProduct = await addToCart(id);
-    addProduct(cartProduct);
-    setLoading(false);
-    toast.info("Added to Cart!", {
-      position: "bottom-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-      className: "rounded-none",
-      closeButton: true,
-      style: {
-        background: "#d4af37",
-      },
-    });
-  }
-
   return (
     <section className="w-full flex flex-col gap-3">
       <div>
@@ -64,13 +34,7 @@ export default function ProductCard({
             <span className="my-0">
               <Link href={`/shirts/${slug}`}>{title}</Link>
             </span>
-            {loading ? (
-              <Spinner className="size-4 animate-spin" />
-            ) : (
-              <button onClick={handleAddingToCart}>
-                <CartIcon className="cursor-pointer size-4" />
-              </button>
-            )}
+            <AddToCartBtn isHomePage shirtId={id} />
           </div>
 
           {/* Product Type */}

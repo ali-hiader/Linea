@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { Session } from "better-auth";
 
 const signInSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
@@ -13,7 +12,7 @@ const signInSchema = z.object({
 
 export interface SignInResponseI {
   success: boolean;
-  session: Session | null;
+  userId: string | undefined;
   emailError?: string;
   passwordError?: string;
   generalError?: string;
@@ -28,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          session: null,
+          userId: undefined,
           emailError: z.flattenError(parsedData.error).fieldErrors.email,
           passwordError: z.flattenError(parsedData.error).fieldErrors.password,
         },
@@ -51,16 +50,16 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          session: null,
+          userId: undefined,
           generalError: "Invalid credentials. Please try again.",
         },
         { status: 401 }
       );
     }
-    const betterAuthResponse: Response = await signInResponse.json();
+    const betterAuthResponse = await signInResponse.json();
 
     const response = NextResponse.json(
-      { success: true, session: betterAuthResponse },
+      { success: true, userId: betterAuthResponse.user.id },
       { status: 200 }
     );
 
@@ -76,7 +75,7 @@ export async function POST(req: Request) {
     if (error instanceof Error) {
       console.error("❌ Signin error:", error.message);
       return NextResponse.json(
-        { success: false, generalError: error.message },
+        { success: false, userId: undefined, generalError: error.message },
         { status: 500 }
       );
     }

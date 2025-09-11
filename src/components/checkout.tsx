@@ -28,6 +28,7 @@ function Checkout({ cartItems }: Props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ products: cartItems }),
+        cache: "no-store",
       });
 
       const { url } = await response.json();

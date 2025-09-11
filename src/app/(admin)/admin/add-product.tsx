@@ -17,7 +17,7 @@ import { ChangeEvent, useActionState, useRef, useState } from "react";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import Spinner from "@/icons/spinner";
-import { addNewProduct } from "@/actions/product-actions";
+import { addNewProduct } from "@/actions/shirt-actions";
 import { Card } from "@/components/ui/card";
 
 function AddProduct() {

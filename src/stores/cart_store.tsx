@@ -2,53 +2,76 @@ import { create } from "zustand";
 import { CartProduct } from "@/lib/types";
 
 interface CartStore {
-  products: CartProduct[];
-  setProducts: (products: CartProduct[]) => void;
-  addProduct: (product: CartProduct) => void;
-  updateQuantity: (productId: number) => void;
-  decreaseQuantity: (productId: number) => void;
-  removeProduct: (productId: number) => void;
+  shirtsCartS: CartProduct[];
+  setShirtsCartS: (products: CartProduct[]) => void;
+  addShirtCartS: (product: CartProduct, userId: string) => void;
+  increaseShirtQuantityCartS: (productId: number, userId: string) => void;
+  decreaseShirtQuantityCartS: (productId: number, userId: string) => void;
+  removeShirtCartS: (productId: number, userId: string) => void;
 }
 
 const useCartStore = create<CartStore>((set) => ({
-  products: [],
-  setProducts: (products) => set({ products }),
+  shirtsCartS: [],
+  setShirtsCartS: (products) => set({ shirtsCartS: products }),
 
-  addProduct: (product) =>
-    set((state) => ({
-      products: [...state.products, product],
-    })),
+  addShirtCartS: (product, userId) =>
+    set((state) => {
+      const exsistingShirtIdx = state.shirtsCartS.findIndex(
+        (p) => p.id !== product.id && p.createdBy === userId
+      );
+      if (exsistingShirtIdx !== -1) {
+        return {
+          shirtsCartS: state.shirtsCartS.map((p) =>
+            p.id === product.id && p.createdBy === userId
+              ? { ...p, quantity: p.quantity + 1 }
+              : p
+          ),
+        };
+      } else {
+        return {
+          shirtsCartS: [...state.shirtsCartS, product],
+        };
+      }
+    }),
 
-  updateQuantity: (productId) =>
+  increaseShirtQuantityCartS: (productId, userId) =>
     set((state) => ({
-      products: state.products.map((product) =>
-        product.id === productId
+      shirtsCartS: state.shirtsCartS.map((product) =>
+        product.id === productId && product.createdBy === userId
           ? { ...product, quantity: product.quantity + 1 }
           : product
       ),
     })),
 
-  decreaseQuantity: (productId) =>
+  decreaseShirtQuantityCartS: (productId, userId) =>
     set((state) => {
-      const product = state.products.find((p) => p.id === productId);
-      if (!product) return state;
+      const exsistingShirt = state.shirtsCartS.find(
+        (p) => p.id === productId && p.createdBy === userId
+      );
+      if (!exsistingShirt) return state;
 
-      if (product.quantity === 1) {
+      if (exsistingShirt.quantity === 1) {
         return {
-          products: state.products.filter((p) => p.id !== productId),
+          shirtsCartS: state.shirtsCartS.filter(
+            (p) => p.id !== productId && p.createdBy === userId
+          ),
         };
       } else {
         return {
-          products: state.products.map((p) =>
-            p.id === productId ? { ...p, quantity: p.quantity - 1 } : p
+          shirtsCartS: state.shirtsCartS.map((p) =>
+            p.id === productId && p.createdBy === userId
+              ? { ...p, quantity: p.quantity - 1 }
+              : p
           ),
         };
       }
     }),
 
-  removeProduct: (productId) =>
+  removeShirtCartS: (productId) =>
     set((state) => ({
-      products: state.products.filter((product) => product.id !== productId),
+      shirtsCartS: state.shirtsCartS.filter(
+        (product) => product.id !== productId
+      ),
     })),
 }));
 

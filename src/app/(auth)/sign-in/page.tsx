@@ -15,7 +15,7 @@ interface ErrorState {
 
 export default function SignInPage() {
   const router = useRouter();
-  const { setSession } = useAuthStore();
+  const { setUserIdAuthS: setSession } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ErrorState>({
     emailError: undefined,
@@ -48,7 +48,7 @@ export default function SignInPage() {
       });
 
       const data = (await res.json()) as SignInResponseI;
-      setSession(data.session);
+      setSession(data.userId);
 
       if (!res.ok) {
         setError({

@@ -1,13 +1,9 @@
 "use client";
 
-import AboutIcon from "@/icons/about";
-import CartIcon from "@/icons/cart";
-import { HomeIcon } from "@/icons/home";
-import { LoginIcon } from "@/icons/log_in";
-import UserIcon from "@/icons/user";
-import { useAuthStore } from "@/stores/auth_store";
+import { SVGProps, JSX } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import {
   Dialog,
   DialogContent,
@@ -15,7 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { SVGProps, JSX } from "react";
+import AboutIcon from "@/icons/about";
+import CartIcon from "@/icons/cart";
+import { HomeIcon } from "@/icons/home";
+import { LoginIcon } from "@/icons/log_in";
+import UserIcon from "@/icons/user";
+import { useAuthStore } from "@/stores/auth_store";
 
 const navLinks = [
   { href: "/", icon: HomeIcon, label: "Home" },
@@ -31,7 +32,7 @@ const signedUpLinks = [
 
 export default function NavBar() {
   const pathName = usePathname();
-  const session = useAuthStore((state) => state.session);
+  const session = useAuthStore((state) => state.userIdAuthS);
   const renderLink = (link: {
     href: string;
     icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
