@@ -8,7 +8,7 @@ interface CartStore {
   increaseShirtQuantityCartS: (productId: number, userId: string) => void;
   decreaseShirtQuantityCartS: (productId: number, userId: string) => void;
   removeShirtCartS: (productId: number, userId: string) => void;
-  clearCartS: () => void;
+  clearCartS: (userId: string) => void;
 }
 
 const useCartStore = create<CartStore>((set) => ({
@@ -75,9 +75,11 @@ const useCartStore = create<CartStore>((set) => ({
       ),
     })),
 
-  clearCartS: () =>
-    set(() => ({
-      shirtsCartS: [],
+  clearCartS: (userId) =>
+    set((state) => ({
+      shirtsCartS: state.shirtsCartS.filter(
+        (shirt) => shirt.createdBy !== userId
+      ),
     })),
 }));
 
