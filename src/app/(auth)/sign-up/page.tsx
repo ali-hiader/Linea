@@ -86,7 +86,10 @@ export default function Page() {
           {error.generalError}
         </p>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-col min-w-xl">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col  min-w-full sm:min-w-lg md:min-w-xl px-4"
+      >
         <input
           type="text"
           className=" placeholder:text-gray-700 text-gray-800 border border-gray-400 px-4 py-2 rounded"

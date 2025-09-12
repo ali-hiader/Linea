@@ -6,6 +6,23 @@ import { useState } from "react";
 import CheckoutProduct from "@/components/checkout_product";
 import Heading from "./heading";
 import { CartProduct } from "@/lib/types";
+import DisplayAlert from "./display_alert";
+import CardItemCopy from "./card_copy_item";
+
+const cardData = [
+  {
+    label: "Card Number",
+    content: "4242 4242 4242 4242",
+  },
+  {
+    label: "CVC (any 3 digits)",
+    content: "123",
+  },
+  {
+    label: "M/Y (any future date)",
+    content: "12/30",
+  },
+];
 
 interface Props {
   cartItems: CartProduct[];
@@ -42,6 +59,14 @@ function Checkout({ cartItems }: Props) {
     }
   };
 
+  if (cartItems.length === 0) {
+    return (
+      <DisplayAlert showBtn={false}>
+        Please add shirts to cart to review here!
+      </DisplayAlert>
+    );
+  }
+
   return (
     <main className="px-4 sm:px-[5%] mb-12">
       <Heading
@@ -49,6 +74,21 @@ function Checkout({ cartItems }: Props) {
         itemsOnPage={cartItems.reduce((sum, shirt) => sum + shirt.quantity, 0)}
       />
       <section className="max-w-5xl mx-auto mt-12">
+        <section className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mt-6 border-y border-y-primary/20 pt-4 pb-6">
+          <h3 className="md:col-span-2 md:text-center">
+            Practice Project – Only test Payments Will Be Made (test card info)
+          </h3>
+          {cardData.map((card) => (
+            <div
+              key={card.content}
+              className="flex gap-2 items-center text-sm text-gray-600"
+            >
+              <CardItemCopy key={card.content} content={card.content} /> –
+              <h2>{card.label}</h2>
+            </div>
+          ))}
+        </section>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8 px-4">
           {cartItems.map((product) => (
             <CheckoutProduct key={product.id} product={product} />

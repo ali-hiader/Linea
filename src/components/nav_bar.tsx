@@ -44,16 +44,20 @@ export default function NavBar() {
         href={link.href}
         key={link.href}
         className={`${
-          active ? "bg-primary/20" : "bg-primary/5"
-        } flex justify-between items-center px-3 py-2 rounded-full hover:bg-primary/10`}
+          active || (pathName === "/sign-up" && link.href === "/sign-in")
+            ? "bg-primary/15"
+            : "bg-primary/5 hover:bg-primary/10"
+        } flex justify-between items-center px-3 py-2 rounded-full `}
       >
         <p className="flex items-center gap-3">
           <link.icon
-            className={`${active ? "text-primary" : "text-gray-700"} size-6`}
+            className={`${active || (pathName === "/sign-up" && link.href === "/sign-in") ? "text-primary" : "text-gray-700"} size-6`}
           />
           <span
             className={`${
-              active ? "text-primary" : "text-gray-700"
+              active || (pathName === "/sign-up" && link.href === "/sign-in")
+                ? "text-primary"
+                : "text-gray-700"
             } font-medium`}
           >
             {link.label}
